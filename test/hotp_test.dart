@@ -1,10 +1,8 @@
 import 'package:dart_otp/dart_otp.dart';
-import 'package:dart_otp/src/components/otp_algorithm.dart';
-import 'package:dart_otp/src/components/otp_type.dart';
 import 'package:test/test.dart';
 
 void main() {
-  var hotp = HOTP(secret: "J22U6B3WIWRRBTAV");
+  var hotp = HOTP("J22U6B3WIWRRBTAV");
 
   test('[HOTP] Should check the token with default digits', () {
     expect(hotp.digits, 6);
@@ -17,11 +15,8 @@ void main() {
   test(
       '[HOTP] Should check the token with custom digits, counter and algorithm',
       () {
-    var token = HOTP(
-        secret: "J22U6B3WIWRRBTAV",
-        digits: 8,
-        counter: 50,
-        algorithm: OTPAlgorithm.SHA256);
+    var token = HOTP("J22U6B3WIWRRBTAV",
+        digits: 8, counter: 50, algorithm: OTPAlgorithm.SHA256);
 
     expect(token.digits, 8);
     expect(token.counter, 50);
@@ -54,22 +49,10 @@ void main() {
   });
 
   test('[HOTP] Should generate token urls with a custom token', () {
-    var token = HOTP(
-        secret: "J22U6B3WIWRRBTAV",
-        digits: 8,
-        counter: 10,
-        algorithm: OTPAlgorithm.SHA256);
+    var token = HOTP("J22U6B3WIWRRBTAV",
+        digits: 8, counter: 10, algorithm: OTPAlgorithm.SHA256);
     expect(token.generateUrl(issuer: "More", account: "Digits"),
         "otpauth://hotp/Digits?secret=J22U6B3WIWRRBTAV&issuer=More&digits=8&algorithm=SHA256&counter=10");
-  });
-
-  test('[HOTP] Fail Conditions: Init Asserts', () {
-    expect(() => HOTP(secret: null),
-        throwsA(predicate((e) => e.toString().contains('secret != null'))));
-    expect(() => HOTP(secret: '', digits: null),
-        throwsA(predicate((e) => e.toString().contains('digits != null'))));
-    expect(() => HOTP(secret: '', digits: 0, algorithm: null),
-        throwsA(predicate((e) => e.toString().contains('algorithm != null'))));
   });
 
   test('[HOTP] Fail Conditions: Validations', () {

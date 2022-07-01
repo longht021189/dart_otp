@@ -34,18 +34,8 @@ abstract class OTP {
   /// [algorithm] have a default value, so can be ignored.
   /// Will throw an exception if the line above isn't satisfied.
   ///
-  OTP(
-      {String secret,
-      int digits = 6,
-      OTPAlgorithm algorithm = OTPAlgorithm.SHA1})
-      : assert(secret != null),
-        assert(digits != null),
-        assert(algorithm != null),
-        assert(digits >= 6 && digits <= 8) {
-    this.secret = secret;
-    this.digits = digits;
-    this.algorithm = algorithm;
-  }
+  OTP(this.secret, {this.digits = 6, this.algorithm = OTPAlgorithm.SHA1})
+      : assert(digits >= 6 && digits <= 8);
 
   ///
   /// When class HOTP or TOTP pass the input params to this
@@ -55,16 +45,15 @@ abstract class OTP {
   /// All parameters are mandatory however [algorithm] have
   /// a default value, so can be ignored.
   ///
-  String generateOTP({int input, OTPAlgorithm algorithm = OTPAlgorithm.SHA1}) {
+  String generateOTP(int input, {OTPAlgorithm algorithm = OTPAlgorithm.SHA1}) {
     /// base32 decode the secret
     var hmacKey = base32.decode(this.secret);
 
     /// initial the HMAC-SHA1 object
-    var hmacSha =
-        AlgorithmUtil.createHmacFor(algorithm: algorithm, key: hmacKey);
+    var hmacSha = AlgorithmUtil.createHmacFor(algorithm, hmacKey);
 
     /// get hmac answer
-    var hmac = hmacSha.convert(Util.intToBytelist(input: input)).bytes;
+    var hmac = hmacSha.convert(Util.intToBytelist(input)).bytes;
 
     /// calculate the init offset
     int offset = hmac[hmac.length - 1] & 0xf;
@@ -88,13 +77,13 @@ abstract class OTP {
   /// Use [issuer] and [account] parameters to specify the token information.
   /// All the remaining OTP fields will be exported.
   ///
-  String generateUrl({String issuer, String account}) {
+  String generateUrl({String? issuer, String? account}) {
     final _secret = this.secret;
-    final _type = OTPUtil.otpTypeValue(type: type);
+    final _type = OTPUtil.otpTypeValue(type);
     final _account = Uri.encodeComponent(account ?? '');
     final _issuer = Uri.encodeQueryComponent(issuer ?? '');
 
-    final _algorithm = AlgorithmUtil.rawValue(algorithm: algorithm);
+    final _algorithm = AlgorithmUtil.rawValue(algorithm);
     final _extra = extraUrlProperties
         .map((key, value) => MapEntry(key, "$key=$value"))
         .values

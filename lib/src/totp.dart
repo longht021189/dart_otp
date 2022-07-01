@@ -28,14 +28,11 @@ class TOTP extends OTP {
   ///
   /// Will throw an exception if the line above isn't satisfied.
   ///
-  TOTP(
-      {String secret,
-      int digits = 6,
-      int interval = 30,
+  TOTP(String secret,
+      {int digits = 6,
+      this.interval = 30,
       OTPAlgorithm algorithm = OTPAlgorithm.SHA1})
-      : super(secret: secret, digits: digits, algorithm: algorithm) {
-    this.interval = interval;
-  }
+      : super(secret, digits: digits, algorithm: algorithm);
 
   ///
   /// Generate the TOTP value with current time.
@@ -46,8 +43,8 @@ class TOTP extends OTP {
   /// ```
   ///
   String now() {
-    int _formatTime = Util.timeFormat(time: DateTime.now(), interval: interval);
-    return super.generateOTP(input: _formatTime);
+    int _formatTime = Util.timeFormat(DateTime.now(), interval);
+    return super.generateOTP(_formatTime);
   }
 
   ///
@@ -60,13 +57,13 @@ class TOTP extends OTP {
   /// totp.value(date: DateTime.now()); // => 432143
   /// ```
   ///
-  String value({DateTime date}) {
+  String? value({DateTime? date}) {
     if (date == null) {
       return null;
     }
 
-    int _formatTime = Util.timeFormat(time: date, interval: interval);
-    return super.generateOTP(input: _formatTime);
+    int _formatTime = Util.timeFormat(date, interval);
+    return super.generateOTP(_formatTime);
   }
 
   ///
@@ -83,15 +80,15 @@ class TOTP extends OTP {
   /// totp.verify(otp: 432143); // => false
   /// ```
   ///
-  bool verify({String otp, DateTime time}) {
+  bool verify({String? otp, DateTime? time}) {
     if (otp == null) {
       return false;
     }
 
     var _time = time ?? DateTime.now();
-    var _input = Util.timeFormat(time: _time, interval: interval);
+    var _input = Util.timeFormat(_time, interval);
 
-    String otpTime = super.generateOTP(input: _input);
+    String otpTime = super.generateOTP(_input);
     return otp == otpTime;
   }
 }

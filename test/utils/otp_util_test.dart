@@ -4,8 +4,7 @@ import 'package:test/test.dart';
 
 void main() {
   test('[OTPType] Should convert otp type cases into the right values', () {
-    expect(OTPUtil.otpTypeValue(type: null), null);
-    expect(OTPUtil.otpTypeValue(type: OTPType.TOTP), 'totp');
-    expect(OTPUtil.otpTypeValue(type: OTPType.HOTP), 'hotp');
+    expect(OTPUtil.otpTypeValue(OTPType.TOTP), 'totp');
+    expect(OTPUtil.otpTypeValue(OTPType.HOTP), 'hotp');
   });
 }

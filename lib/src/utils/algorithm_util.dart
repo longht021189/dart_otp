@@ -2,11 +2,7 @@ import 'package:crypto/crypto.dart';
 import 'package:dart_otp/dart_otp.dart';
 
 abstract class AlgorithmUtil {
-  static Hmac createHmacFor({OTPAlgorithm algorithm, List<int> key}) {
-    if (key == null) {
-      return null;
-    }
-
+  static Hmac createHmacFor(OTPAlgorithm algorithm, List<int> key) {
     switch (algorithm) {
       case OTPAlgorithm.SHA1:
         return Hmac(sha1, key);
@@ -16,13 +12,10 @@ abstract class AlgorithmUtil {
         return Hmac(sha384, key);
       case OTPAlgorithm.SHA512:
         return Hmac(sha512, key);
-
-      default:
-        return null;
     }
   }
 
-  static String rawValue({OTPAlgorithm algorithm}) {
+  static String rawValue(OTPAlgorithm algorithm) {
     switch (algorithm) {
       case OTPAlgorithm.SHA1:
         return 'SHA1';
@@ -32,9 +25,6 @@ abstract class AlgorithmUtil {
         return 'SHA384';
       case OTPAlgorithm.SHA512:
         return 'SHA512';
-
-      default:
-        return null;
     }
   }
 }

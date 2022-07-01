@@ -1,10 +1,8 @@
 import 'package:dart_otp/dart_otp.dart';
-import 'package:dart_otp/src/components/otp_algorithm.dart';
-import 'package:dart_otp/src/components/otp_type.dart';
 import 'package:test/test.dart';
 
 void main() {
-  var totp = TOTP(secret: "J22U6B3WIWRRBTAV");
+  var totp = TOTP("J22U6B3WIWRRBTAV");
 
   test('[TOTP] Should check the token with default digits and interval', () {
     expect(totp.digits, 6);
@@ -17,11 +15,8 @@ void main() {
   test(
       '[TOTP] Should check the token with custom digits, interval and algorithm',
       () {
-    var token = TOTP(
-        secret: "J22U6B3WIWRRBTAV",
-        digits: 8,
-        interval: 60,
-        algorithm: OTPAlgorithm.SHA256);
+    var token = TOTP("J22U6B3WIWRRBTAV",
+        digits: 8, interval: 60, algorithm: OTPAlgorithm.SHA256);
 
     expect(token.digits, 8);
     expect(token.interval, 60);
@@ -61,22 +56,10 @@ void main() {
   });
 
   test('[HOTP] Should generate token urls with a custom token', () {
-    var token = TOTP(
-        secret: "J22U6B3WIWRRBTAV",
-        digits: 8,
-        interval: 60,
-        algorithm: OTPAlgorithm.SHA256);
+    var token = TOTP("J22U6B3WIWRRBTAV",
+        digits: 8, interval: 60, algorithm: OTPAlgorithm.SHA256);
     expect(token.generateUrl(issuer: "More", account: "Digits"),
         "otpauth://totp/Digits?secret=J22U6B3WIWRRBTAV&issuer=More&digits=8&algorithm=SHA256&period=60");
-  });
-
-  test('[TOTP] Fail Conditions: Init Asserts', () {
-    expect(() => TOTP(secret: null),
-        throwsA(predicate((e) => e.toString().contains('secret != null'))));
-    expect(() => TOTP(secret: '', digits: null),
-        throwsA(predicate((e) => e.toString().contains('digits != null'))));
-    expect(() => HOTP(secret: '', digits: 0, algorithm: null),
-        throwsA(predicate((e) => e.toString().contains('algorithm != null'))));
   });
 
   test('[TOTP] Fail Conditions: Validations', () {
